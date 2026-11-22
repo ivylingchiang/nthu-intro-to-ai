@@ -2,16 +2,11 @@
 
 Team 11 final project for Introduction to Artificial Intelligence (NTHU, spring 2025). Reinforcement learning (RL) agents control traffic lights in the [SUMO](https://eclipse.dev/sumo/) traffic simulator. The goal is to cut waiting time and CO2 emissions compared with a fixed-timing signal.
 
-This folder combines two sources:
-
-- The team repository [Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11](https://github.com/Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11), copied at commit [`d108812`](https://github.com/Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11/tree/d108812eb9e715c455f23ad3fb93e09d56f74525) (24 May 2025): `single_intersection/`, `Nguyen/` and `requirements.txt`.
-- My own training notebooks, tuning logs and project documents: `TrainingModule/`, `TrainingData/` and `docs/`.
-
 ## Folder structure
 
 ```
 FinalProject-SUMO/
-├── single_intersection/      # From the team repo: single-intersection scenario
+├── single_intersection/      # Single-intersection scenario
 │   ├── single-intersection.net.xml        # SUMO network
 │   ├── single-intersection-vhvh.rou.xml   # Traffic routes
 │   ├── sumo_rl.ipynb                      # Training notebook
@@ -21,12 +16,12 @@ FinalProject-SUMO/
 │   ├── rainbowDQN_sumo_model.zip          # Trained QR-DQN model (used by compare_metrics.py)
 │   ├── rainbowDQN_sumo_model_emmision_crap.zip  # QR-DQN trained on the CO2 reward (worse result)
 │   └── ppo_sumo_model_emission.zip        # Trained PPO model
-├── Nguyen/                   # From the team repo: multi-intersection Nguyen network
+├── Nguyen/                   # Multi-intersection Nguyen network
 │   ├── nguyen.sumocfg, *.net.xml, *.rou.xml, ...  # Network, demand and route files
 │   ├── sumo_rl_ngu.ipynb                  # Training notebook (QR-DQN)
 │   ├── ngu.py                             # Training script (QR-DQN)
 │   └── compare_metrics.py                 # RL model vs. fixed timing
-├── TrainingModule/           # My training notebooks (PPO, A2C, ARS) and comparison scripts
+├── TrainingModule/           # Training notebooks (PPO, A2C, ARS) and comparison scripts
 ├── TrainingData/             # Hyperparameter tuning logs (PDF) and A2C training curves (PNG)
 ├── docs/
 │   ├── AI_Presentation.pdf                # Final presentation
@@ -54,7 +49,7 @@ Single intersection, RL agent compared with fixed timing:
 | A2C (lr 3e-4, 300k steps) | −97.3% | −47.1% | −83.0% | +48.2% |
 | QR-DQN (`single_intersection/rainbowDQN_sumo_model.zip`) | −91.5% | −22.0% | −66.2% | +34.3% |
 
-The PPO and A2C rows come from the tuning logs in [`TrainingData/`](TrainingData). The QR-DQN row comes from the team repository. Raw QR-DQN numbers:
+The PPO and A2C rows come from the tuning logs in [`TrainingData/`](TrainingData). Raw QR-DQN numbers:
 
 | Metric | QR-DQN | Fixed timing |
 |---|---|---|
@@ -95,8 +90,4 @@ Notes:
 
 - The scripts open network and model files by relative path, so run each script from its own folder.
 - The scripts in `TrainingModule/` expect the network files and a trained model in the same folder. Copy `single-intersection.net.xml` and `single-intersection-vhvh.rou.xml` from `single_intersection/`, and train the model with the matching notebook first. The model files they name (for example `ppo_sumo_model_emission_v1_D.zip`) are not stored in this repository.
-- `Nguyen/compare_metrics.py` loads `rainbowDQN_sumo_model_ngu.zip`, which the team repository does not include. Train it with `Nguyen/sumo_rl_ngu.ipynb` first.
-
-## Credits
-
-Team 11, six students. The `single_intersection/` and `Nguyen/` code and models come from the team repository. Thanks to all team members.
+- `Nguyen/compare_metrics.py` loads `rainbowDQN_sumo_model_ngu.zip`, which is not stored in this repository. Train it with `Nguyen/sumo_rl_ngu.ipynb` first.
