@@ -28,7 +28,7 @@ Most traffic lights run on fixed timers. Cars wait at red lights even when the c
 | A2C (lr 3e-4, 300k steps) | −97.3% | −47.1% | −83.0% | +48.2% |
 | Rainbow DQN (QR-DQN) | −91.5% | −22.0% | −66.2% | +34.3% |
 
-**Larger network (multi-agent, Rainbow DQN, 3 test cases).** Waiting time dropped by about 75–85% and completed trips rose by about 25–45% in every test case. CO2 emissions stayed about the same as fixed timing.
+**Larger network (multi-agent, Rainbow DQN, 3 test cases).** Waiting time dropped by about 75–85% and completed trips rose by about 25–50% in every test case. CO2 emissions stayed about the same as fixed timing.
 
 **With pedestrians (Rainbow DQN).** Compared with fixed timing, average vehicle waiting time dropped by about half, average pedestrian waiting time dropped from about 4.9 to 0.2, and CO2 emissions dropped by about 25%.
 
