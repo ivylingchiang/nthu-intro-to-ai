@@ -12,35 +12,27 @@ Most traffic lights run on fixed timers. Cars wait at red lights even when the c
 
 ### Approach
 
-- **Simulator:** [SUMO](https://eclipse.dev/sumo/) (Simulation of Urban MObility), controlled through the TraCI API and the [`sumo-rl`](https://github.com/LucasAlegre/sumo-rl) Gymnasium environment.
-- **Observation:** current phase (one-hot), a min-green flag, and the density and queue length of each incoming lane.
-- **Action:** choose the next green phase. Each phase change adds a 3-second yellow light, and every green lasts at least 5 seconds.
+- **Simulator:** [SUMO](https://eclipse.dev/sumo/) (Simulation of Urban MObility), controlled through TraCI and the [`sumo-rl`](https://github.com/LucasAlegre/sumo-rl) Gymnasium environment.
+- **Algorithms:** Rainbow DQN (QR-DQN), PPO, A2C, ARS and TRPO from Stable-Baselines3 and sb3-contrib, compared with a fixed-timing signal (30 s green, 3 s yellow).
 - **Reward design:** the team tested several rewards and explained why most of them failed. Completed trips gave delayed, unfair credit. Queue length favored one huge stalled queue. A pure CO2 reward taught the agent to block one side, because idle cars emit little. The final choice was **negative average waiting time**, because it clears the intersection and less waiting means less emission.
-- **Algorithms:** A2C, PPO, ARS and QR-DQN from Stable-Baselines3 and sb3-contrib, each with hyperparameter tuning.
-- **Baseline:** a fixed-timing signal (30 s green, 3 s yellow), run on the same 1,000-second single-intersection scenario.
-- **Extensions (in the slides):** a larger multi-intersection network with one agent per light (multi-agent), crosswalks with a higher penalty for making pedestrians wait, and a proposal for Guangfu Road next to the NTHU campus.
+- **Three scenarios:** a single intersection, a larger multi-intersection network (Nguyen) with one agent per traffic light, and an intersection with crosswalks where making pedestrians wait costs more.
+- **Real-world idea:** dynamic signals and digital signs for Guangfu Road next to the NTHU campus (proposal only).
 
-### Results (single intersection, RL agent vs. fixed timing)
+### Results
 
-Percentage change compared with fixed timing. The PPO and A2C rows come from the tuning logs in [`TrainingData/`](FinalProject-SUMO/TrainingData), one evaluation episode each.
+**Single intersection.** All five RL algorithms beat fixed timing on every metric. Percentage change compared with fixed timing:
 
 | Model (run) | Avg. waiting time | Total CO2 | Avg. queue length | Completed trips |
 |---|---|---|---|---|
 | PPO (lr 7e-4, 300k steps) | −97.6% | −49.4% | −84.8% | +49.2% |
 | A2C (lr 3e-4, 300k steps) | −97.3% | −47.1% | −83.0% | +48.2% |
-| QR-DQN | −91.5% | −22.0% | −66.2% | +34.3% |
+| Rainbow DQN (QR-DQN) | −91.5% | −22.0% | −66.2% | +34.3% |
 
-Raw numbers for the QR-DQN model (`single_intersection/rainbowDQN_sumo_model.zip`) compared with fixed timing:
+**Larger network (multi-agent, Rainbow DQN, 3 test cases).** Waiting time dropped by about 75–85% and completed trips rose by about 25–45% in every test case. CO2 emissions stayed about the same as fixed timing.
 
-| Metric | RL model (QR-DQN) | Fixed timing | Improvement |
-|---|---|---|---|
-| Average waiting time | 1,063.73 | 12,546.10 | +91.5% |
-| Total CO2 emissions (g) | 20,675.76 | 26,521.42 | +22.0% |
-| Average queue length | 22.16 | 65.56 | +66.2% |
-| Total completed trips | 608.80 | 453.40 | +34.3% |
-| Average vehicles in system | 52.99 | 78.96 | +32.9% |
+**With pedestrians (Rainbow DQN).** Compared with fixed timing, average vehicle waiting time dropped by about half, average pedestrian waiting time dropped from about 4.9 to 0.2, and CO2 emissions dropped by about 25%.
 
-Not every setting worked. Some ARS runs and one early PPO run had *longer* waiting times than the fixed timer. The logs keep these runs too, so the effect of tuning is visible.
+The larger-network and pedestrian numbers are read from the charts in the slides, so they are approximate. The [project README](FinalProject-SUMO/README.md) has the full tables.
 
 ### Documents
 
