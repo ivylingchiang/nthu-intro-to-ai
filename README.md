@@ -28,7 +28,7 @@ From the tuning logs in [`TrainingData/`](FinalProject-SUMO/TrainingData). Each 
 |---|---|---|---|---|
 | PPO (lr 7e-4, 300k steps) | −97.6% | −49.4% | −84.8% | +49.2% |
 | A2C (lr 3e-4, 300k steps) | −97.3% | −47.1% | −83.0% | +48.2% |
-| QR-DQN (team repo) | −91.5% | −22.0% | −66.2% | +34.3% |
+| QR-DQN | −91.5% | −22.0% | −66.2% | +34.3% |
 
 Not every setting worked. Some ARS runs and one early PPO run had *longer* waiting times than the fixed timer. The logs keep these runs too, so the effect of tuning is visible.
 
@@ -38,7 +38,6 @@ Not every setting worked. Some ARS runs and one early PPO run had *longer* waiti
 - [Team proposal (IEEE format)](FinalProject-SUMO/docs/AI_Team11.pdf)
 - [Proposal assignment spec](FinalProject-SUMO/docs/prog24_proposal.pdf)
 - [Project README with setup and usage](FinalProject-SUMO/README.md)
-- Team repository: [Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11](https://github.com/Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11). Its code, SUMO networks and trained models are copied into [`single_intersection/`](FinalProject-SUMO/single_intersection) and [`Nguyen/`](FinalProject-SUMO/Nguyen).
 
 ## Assignments
 
@@ -64,8 +63,8 @@ Each folder contains the assignment spec (`prog24_*.pdf` / `assign24_*.pdf`), th
 ```
 .
 ├── FinalProject-SUMO/         # Team final project: RL traffic-signal control in SUMO
-│   ├── single_intersection/   # From the team repo: network, training notebooks, trained models, comparison script
-│   ├── Nguyen/                # From the team repo: multi-intersection Nguyen network and training
+│   ├── single_intersection/   # Single intersection: network, training notebooks, trained models, comparison script
+│   ├── Nguyen/                # Multi-intersection Nguyen network and training
 │   ├── TrainingModule/        # Training notebooks (PPO, A2C, ARS) and comparison scripts vs. fixed timing
 │   ├── TrainingData/          # Hyperparameter tuning logs (PDF) and A2C training curves (PNG)
 │   ├── docs/                  # Final presentation, proposal paper, assignment spec
