@@ -24,7 +24,7 @@ FinalProject-SUMO/
 ├── Nguyen/                   # From the team repo: multi-intersection Nguyen network
 │   ├── nguyen.sumocfg, *.net.xml, *.rou.xml, ...  # Network, demand and route files
 │   ├── sumo_rl_ngu.ipynb                  # Training notebook (QR-DQN)
-│   ├── ngu.py                             # Training script
+│   ├── ngu.py                             # Training script (QR-DQN)
 │   └── compare_metrics.py                 # RL model vs. fixed timing
 ├── TrainingModule/           # My training notebooks (PPO, A2C, ARS) and comparison scripts
 ├── TrainingData/             # Hyperparameter tuning logs (PDF) and A2C training curves (PNG)
