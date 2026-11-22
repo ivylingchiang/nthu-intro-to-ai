@@ -51,13 +51,15 @@ Single intersection, RL agent compared with fixed timing:
 
 The PPO and A2C rows come from the tuning logs in [`TrainingData/`](TrainingData). Raw QR-DQN numbers:
 
-| Metric | QR-DQN | Fixed timing |
-|---|---|---|
-| Average waiting time | 1,063.73 | 12,546.10 |
-| Total CO2 emissions (g) | 20,675.76 | 26,521.42 |
-| Average queue length | 22.16 | 65.56 |
-| Total completed trips | 608.80 | 453.40 |
-| Average vehicles in system | 52.99 | 78.96 |
+| Metric | RL model (QR-DQN) | Fixed timing | Improvement |
+|---|---|---|---|
+| Average waiting time | 1,063.73 | 12,546.10 | +91.5% |
+| Total CO2 emissions (g) | 20,675.76 | 26,521.42 | +22.0% |
+| Average queue length | 22.16 | 65.56 | +66.2% |
+| Total completed trips | 608.80 | 453.40 | +34.3% |
+| Average vehicles in system | 52.99 | 78.96 | +32.9% |
+
+Improvement is the percentage change in the better direction: lower is better for waiting time, CO2, queue length and vehicles in system, and higher is better for completed trips.
 
 ## Setup
 

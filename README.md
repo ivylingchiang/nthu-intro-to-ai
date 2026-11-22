@@ -22,13 +22,23 @@ Most traffic lights run on fixed timers. Cars wait at red lights even when the c
 
 ### Results (single intersection, RL agent vs. fixed timing)
 
-From the tuning logs in [`TrainingData/`](FinalProject-SUMO/TrainingData). Each row is one evaluation episode.
+Percentage change compared with fixed timing. The PPO and A2C rows come from the tuning logs in [`TrainingData/`](FinalProject-SUMO/TrainingData), one evaluation episode each.
 
 | Model (run) | Avg. waiting time | Total CO2 | Avg. queue length | Completed trips |
 |---|---|---|---|---|
 | PPO (lr 7e-4, 300k steps) | −97.6% | −49.4% | −84.8% | +49.2% |
 | A2C (lr 3e-4, 300k steps) | −97.3% | −47.1% | −83.0% | +48.2% |
 | QR-DQN | −91.5% | −22.0% | −66.2% | +34.3% |
+
+Raw numbers for the QR-DQN model (`single_intersection/rainbowDQN_sumo_model.zip`) compared with fixed timing:
+
+| Metric | RL model (QR-DQN) | Fixed timing | Improvement |
+|---|---|---|---|
+| Average waiting time | 1,063.73 | 12,546.10 | +91.5% |
+| Total CO2 emissions (g) | 20,675.76 | 26,521.42 | +22.0% |
+| Average queue length | 22.16 | 65.56 | +66.2% |
+| Total completed trips | 608.80 | 453.40 | +34.3% |
+| Average vehicles in system | 52.99 | 78.96 | +32.9% |
 
 Not every setting worked. Some ARS runs and one early PPO run had *longer* waiting times than the fixed timer. The logs keep these runs too, so the effect of tuning is visible.
 
