@@ -1,131 +1,102 @@
-# Traffic Light Control using Reinforcement Learning
+# Carbon Emission Reduction with Dynamic Traffic Light Control
 
-This project implements an intelligent traffic light control system using Quantile Regression DQN (QR-DQN) reinforcement learning algorithm. The system is tested and simulated using SUMO (Simulation of Urban MObility).
+Team 11 final project for Introduction to Artificial Intelligence (NTHU, spring 2025). Reinforcement learning (RL) agents control traffic lights in the [SUMO](https://eclipse.dev/sumo/) traffic simulator. The goal is to cut waiting time and CO2 emissions compared with a fixed-timing signal.
 
-## Project Overview
+This folder combines two sources:
 
-The project aims to optimize traffic flow at a single intersection by using reinforcement learning to control traffic light timing. Our implementation shows significant improvements over traditional fixed-timing strategies across multiple metrics:
+- The team repository [Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11](https://github.com/Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11), copied at commit [`d108812`](https://github.com/Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11/tree/d108812eb9e715c455f23ad3fb93e09d56f74525) (24 May 2025): `single_intersection/`, `Nguyen/` and `requirements.txt`.
+- My own training notebooks, tuning logs and project documents: `TrainingModule/`, `TrainingData/` and `docs/`.
 
-- 91.5% reduction in average waiting time
-- 22.0% reduction in CO2 emissions
-- 66.2% reduction in average queue length
-- 34.3% increase in completed trips
-- 32.9% reduction in average vehicles in system
+## Folder structure
 
-## Prerequisites
+```
+FinalProject-SUMO/
+├── single_intersection/      # From the team repo: single-intersection scenario
+│   ├── single-intersection.net.xml        # SUMO network
+│   ├── single-intersection-vhvh.rou.xml   # Traffic routes
+│   ├── sumo_rl.ipynb                      # Training notebook
+│   ├── sumo_rl_carbon.ipynb               # Training notebook with a CO2-based reward
+│   ├── compare_metrics.py                 # RL model vs. fixed timing
+│   ├── regluar_strategy.py                # Fixed-timing baseline only
+│   ├── rainbowDQN_sumo_model.zip          # Trained QR-DQN model (used by compare_metrics.py)
+│   ├── rainbowDQN_sumo_model_emmision_crap.zip  # QR-DQN trained on the CO2 reward (worse result)
+│   └── ppo_sumo_model_emission.zip        # Trained PPO model
+├── Nguyen/                   # From the team repo: multi-intersection Nguyen network
+│   ├── nguyen.sumocfg, *.net.xml, *.rou.xml, ...  # Network, demand and route files
+│   ├── sumo_rl_ngu.ipynb                  # Training notebook (QR-DQN)
+│   ├── ngu.py                             # Training script
+│   └── compare_metrics.py                 # RL model vs. fixed timing
+├── TrainingModule/           # My training notebooks (PPO, A2C, ARS) and comparison scripts
+├── TrainingData/             # Hyperparameter tuning logs (PDF) and A2C training curves (PNG)
+├── docs/
+│   ├── AI_Presentation.pdf                # Final presentation
+│   ├── AI_Team11.pdf                      # Proposal paper (IEEE format)
+│   └── prog24_proposal.pdf                # Proposal assignment spec
+└── requirements.txt          # Python dependencies
+```
 
-1. Python 3.9 or higher
-2. SUMO (Simulation of Urban MObility)
-   - Windows: Download and install from [SUMO website](https://sumo.dlr.de/docs/Downloads.php)
-   - Linux: `sudo apt-get install sumo sumo-tools sumo-doc`
-   - macOS: `brew install sumo`
-3. Git (for cloning the repository)
+## Method
 
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Crazy-Ting-Yao/Introduction_to_Artificial_Intelligence_Team11.git
-   cd Introduction_to_Artificial_Intelligence_Team11
-   ```
-
-2. Create and activate a virtual environment (recommended):
-   ```bash
-   # Windows
-   python -m venv .venv
-   .venv\Scripts\activate
-
-   # Linux/macOS
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-
-3. Install required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Install sumo-rl package from source (for latest version):
-   ```bash
-   git clone https://github.com/LucasAlegre/sumo-rl
-   cd sumo-rl
-   pip install -e .
-   cd ..
-   ```
-
-5. Configure SUMO environment:
-   ```bash
-   # Windows
-   set SUMO_HOME=C:\Program Files (x86)\Eclipse\Sumo
-   # Linux/macOS
-   export SUMO_HOME=/usr/share/sumo
-   ```
-
-## Project Structure
-
-- `compare_metrics.py`: Main script for comparing RL model performance with fixed timing
-- `rainbowDQN_sumo_model.zip`: Trained RL model
-- `simulate-intersection/`: SUMO configuration files
-  - `single-intersection.net.xml`: Network definition
-  - `single-intersection-vhvh.rou.xml`: Traffic route definition
-- `requirements.txt`: List of Python dependencies
-
-## Usage
-
-1. To compare the RL model with fixed timing strategy:
-   ```bash
-   python compare_metrics.py
-   ```
-   This will run two simulations:
-   - One using the trained RL model
-   - One using a fixed timing strategy (30s green, 3s yellow)
-
-2. The script will display:
-   - Comparison metrics between RL and fixed timing
-   - Percentage improvements for each metric
-   - Visual simulation in SUMO GUI
-
-## Model Details
-
-The reinforcement learning model:
-- Architecture: Quantile Regression DQN (QR-DQN)
-- State space: Traffic density and waiting time information
-- Action space: Traffic light phases
-- Reward function: Combination of:
-  - Waiting time reduction
-  - CO2 emission reduction
-  - Queue length minimization
-  - Trip completion rewards
+- **Environment:** SUMO, controlled through TraCI and the [`sumo-rl`](https://github.com/LucasAlegre/sumo-rl) Gymnasium environment.
+- **Observation:** current phase (one-hot), a min-green flag, and the density and queue length of each incoming lane.
+- **Action:** choose the next green phase. A phase change adds a 3-second yellow light. Every green lasts at least 5 seconds.
+- **Reward:** negative average waiting time. The team also tried rewards based on completed trips, queue length and CO2. The CO2 reward taught the agent to block one direction, because idle cars emit little.
+- **Algorithms:** QR-DQN, PPO, A2C and ARS from Stable-Baselines3 and sb3-contrib.
+- **Baseline:** fixed-timing signal with 30 s green and 3 s yellow, on the same 1,000-second scenario.
 
 ## Results
 
-The RL model significantly outperforms the fixed timing strategy:
+Single intersection, RL agent compared with fixed timing:
 
-| Metric | RL Model | Fixed Timing | Improvement |
-|--------|----------|--------------|-------------|
-| Average Waiting Time | 1,063.73 | 12,546.10 | +91.5% |
-| Total CO2 Emissions (g) | 20,675.76 | 26,521.42 | +22.0% |
-| Average Queue Length | 22.16 | 65.56 | +66.2% |
-| Total Completed Trips | 608.80 | 453.40 | +34.3% |
-| Average Vehicles in System | 52.99 | 78.96 | +32.9% |
+| Model (run) | Avg. waiting time | Total CO2 | Avg. queue length | Completed trips |
+|---|---|---|---|---|
+| PPO (lr 7e-4, 300k steps) | −97.6% | −49.4% | −84.8% | +49.2% |
+| A2C (lr 3e-4, 300k steps) | −97.3% | −47.1% | −83.0% | +48.2% |
+| QR-DQN (`single_intersection/rainbowDQN_sumo_model.zip`) | −91.5% | −22.0% | −66.2% | +34.3% |
 
-## Troubleshooting
+The PPO and A2C rows come from the tuning logs in [`TrainingData/`](TrainingData). The QR-DQN row comes from the team repository. Raw QR-DQN numbers:
 
-1. If you encounter SUMO-related errors:
-   - Ensure SUMO_HOME environment variable is correctly set
-   - Verify SUMO is properly installed and accessible from command line: `sumo --version`
-   - Check if sumo-gui works: `sumo-gui`
+| Metric | QR-DQN | Fixed timing |
+|---|---|---|
+| Average waiting time | 1,063.73 | 12,546.10 |
+| Total CO2 emissions (g) | 20,675.76 | 26,521.42 |
+| Average queue length | 22.16 | 65.56 |
+| Total completed trips | 608.80 | 453.40 |
+| Average vehicles in system | 52.99 | 78.96 |
 
-2. If you get Python package conflicts:
-   - Use a fresh virtual environment
-   - Install packages in the order specified in requirements.txt
-   - Ensure you have compatible Python version (3.9+)
+## Setup
 
-## Contributing
+1. Install Python 3.9 or later.
+2. Install SUMO:
+   - macOS: `brew install sumo`
+   - Linux: `sudo apt-get install sumo sumo-tools sumo-doc`
+   - Windows: download it from the [SUMO website](https://sumo.dlr.de/docs/Downloads.php)
+3. Set `SUMO_HOME`, for example `export SUMO_HOME=/usr/share/sumo` on Linux. Check the install with `sumo --version`.
+4. Install the Python packages in a virtual environment:
 
-This project is part of the Introduction to Artificial Intelligence course. Contributions from team members are welcome through pull requests.
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
 
-## License
+## Usage
 
+Compare the trained QR-DQN model with fixed timing on the single intersection:
 
-This project is for educational purposes. Please check individual dependencies for their respective licenses.
+```bash
+cd single_intersection
+python compare_metrics.py
+```
+
+The script runs one simulation with the RL model and one with fixed timing, opens the SUMO GUI, and prints each metric with the percentage change.
+
+Notes:
+
+- The scripts open network and model files by relative path, so run each script from its own folder.
+- The scripts in `TrainingModule/` expect the network files and a trained model in the same folder. Copy `single-intersection.net.xml` and `single-intersection-vhvh.rou.xml` from `single_intersection/`, and train the model with the matching notebook first. The model files they name (for example `ppo_sumo_model_emission_v1_D.zip`) are not stored in this repository.
+- `Nguyen/compare_metrics.py` loads `rainbowDQN_sumo_model_ngu.zip`, which the team repository does not include. Train it with `Nguyen/sumo_rl_ngu.ipynb` first.
+
+## Credits
+
+Team 11, six students. The `single_intersection/` and `Nguyen/` code and models come from the team repository. Thanks to all team members.
